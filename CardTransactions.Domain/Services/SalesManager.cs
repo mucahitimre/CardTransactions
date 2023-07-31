@@ -3,11 +3,15 @@ using CardTransactions.Api.Abstractions;
 using CardTransactions.Domain.Abstractions;
 using CardTransactions.Domain.Documents;
 using CardTransactions.Domain.Models;
+using ZstdSharp.Unsafe;
 
 namespace CardTransactions.Domain.Services
 {
     public class SalesManager : ISalesManager
     {
+        private const string SUCCESS_CODE = "00";
+        private const string UNSUCCESS_CODE = "-1";
+
         private readonly IMongoService _mongoService;
 
         public SalesManager(IMongoService mongoService)
@@ -30,8 +34,7 @@ namespace CardTransactions.Domain.Services
         public async Task SaveAsync(SalesInsertModel request)
         {
             // todo: check..
-            CheckLuhnAlgorithm(request.CardNumber);
-
+            var responseCode = GetResponseCodeByLuhnAlgorithm(request.CardNumber);
             var doc = new SalesDocument
             {
                 Id = Guid.NewGuid(),
@@ -39,13 +42,15 @@ namespace CardTransactions.Domain.Services
                 ExpiryDate = request.CardEndDate,
                 CardFullName = request.CardFullName,
                 CardSecurityNumber = request.CardSecurityNumber,
-                CreatedUtc = DateTime.UtcNow
+                CreatedUtc = DateTime.UtcNow,
+                ResponseCode = responseCode,
+                IsSuccess = responseCode == SUCCESS_CODE
             };
 
             await _mongoService.Add(doc);
         }
 
-        private static void CheckLuhnAlgorithm(string cardNumber)
+        private static string GetResponseCodeByLuhnAlgorithm(string cardNumber)
         {
             var items = cardNumber.Trim().ToCharArray().Where(e => e != ' ').ToArray();
 
@@ -65,10 +70,8 @@ namespace CardTransactions.Domain.Services
             }
 
             var result = total % 10 == default;
-            if (!result)
-            {
-                throw new Exception("The cart number is not valid.");
-            }
+
+            return result ? SUCCESS_CODE : UNSUCCESS_CODE;
         }
     }
 }
