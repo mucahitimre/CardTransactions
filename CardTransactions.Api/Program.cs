@@ -1,4 +1,8 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using CardTransactions.Api.Abstractions;
+using CardTransactions.Domain.Abstractions;
+using CardTransactions.Domain.Services;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -6,6 +10,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddTransient<IMongoService, MongoService>();
+builder.Services.AddTransient<ISalesManager, SalesManager>();
 
 var app = builder.Build();
 
