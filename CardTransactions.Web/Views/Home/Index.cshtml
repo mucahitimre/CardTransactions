@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listeleme Sayfası</title>
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <h1>Liste Sayfası</h1>
+    <div class="filter-container">
+        <label for="id-filter">ID Filtresi:</label>
+        <input type="number" id="id-filter">
+        <label for="date-filter">Tarih Filtresi:</label>
+        <input type="date" id="date-filter">
+        <button id="filter-button">Filtrele</button>
+    </div>
+    <ul id="item-list">
+        <!-- Liste öğeleri dinamik olarak buraya eklenecek -->
+    </ul>
+    <script src="~/js/site.js"></script>
+</body>
+</html>

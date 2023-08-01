@@ -1,0 +1,38 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.filter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#item-list {
+    list-style: none;
+    padding: 0;
+}
+
+    #item-list li {
+        cursor: pointer;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+        #item-list li:hover {
+            background-color: #f0f0f0;
+        }
+
+#detail-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+}
+
+/* Ekstra stillendirmeler yapýlabilir */

@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1705.3
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardTransactions.Api", "CardTransactions.Api\CardTransactions.Api.csproj", "{06E1E7FD-BCDC-4548-876C-C962C6CA93D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardTransactions.Api", "CardTransactions.Api\CardTransactions.Api.csproj", "{06E1E7FD-BCDC-4548-876C-C962C6CA93D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardTransactions.Domain", "CardTransactions.Domain\CardTransactions.Domain.csproj", "{F14F3933-52C5-4FF1-9829-77F1B003C108}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardTransactions.Domain", "CardTransactions.Domain\CardTransactions.Domain.csproj", "{F14F3933-52C5-4FF1-9829-77F1B003C108}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardTransactions.Web", "CardTransactions.Web\CardTransactions.Web.csproj", "{A74AB34A-F822-465E-8EC5-27812BBD1B01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{F14F3933-52C5-4FF1-9829-77F1B003C108}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F14F3933-52C5-4FF1-9829-77F1B003C108}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F14F3933-52C5-4FF1-9829-77F1B003C108}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A74AB34A-F822-465E-8EC5-27812BBD1B01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A74AB34A-F822-465E-8EC5-27812BBD1B01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A74AB34A-F822-465E-8EC5-27812BBD1B01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A74AB34A-F822-465E-8EC5-27812BBD1B01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
