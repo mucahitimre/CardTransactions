@@ -1,89 +1,117 @@
-﻿// Liste öğeleri için boş bir dizi tanımlıyoruz
-let itemList = [];
+﻿// Get unique values for the desired columns
 
-// Liste sayfasındaki HTML elemanları seçme
-const itemListElement = document.getElementById('item-list');
-const idFilterInput = document.getElementById('id-filter');
-const dateFilterInput = document.getElementById('date-filter');
-const filterButton = document.getElementById('filter-button');
+// {2 : ["M", "F"], 3 : ["RnD", "Engineering", "Design"], 4 : [], 5 : []}
 
-// Detay sayfasındaki HTML elemanları seçme
-const detailContainer = document.getElementById('detail-container');
+function getUniqueValuesFromColumn() {
 
-// Verileri API'den al ve listeyi oluşturarak sayfada göster
-function fetchData() {
-    fetch('/Home/GetData') // API URL'ini buraya yazın
-        //.then(response => response.json())
-        .then(data => {
-            itemList = data;
-            renderList();
-        })
-        .catch(error => {
-            console.error('Veri alınamadı:', error);
-        });
-}
+    var unique_col_values_dict = {}
 
-// Listeyi oluştur ve sayfada göster
-function renderList() {
-    itemListElement.innerHTML = '';
+    allFilters = document.querySelectorAll(".table-filter")
+    allFilters.forEach((filter_i) => {
+        col_index = filter_i.parentElement.getAttribute("col-index");
+        // alert(col_index)
+        const rows = document.querySelectorAll("#emp-table > tbody > tr")
 
-    itemList.forEach(item => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `ID: ${item.id} - Tarih: ${item.date}`;
-        listItem.setAttribute('data-detail', item.detail);
+        rows.forEach((row) => {
+            cell_value = row.querySelector("td:nth-child(" + col_index + ")").innerHTML;
+            // if the col index is already present in the dict
+            if (col_index in unique_col_values_dict) {
 
-        listItem.addEventListener('click', () => {
-            showDetail(item.id);
+                // if the cell value is already present in the array
+                if (unique_col_values_dict[col_index].includes(cell_value)) {
+                    // alert(cell_value + " is already present in the array : " + unique_col_values_dict[col_index])
+
+                } else {
+                    unique_col_values_dict[col_index].push(cell_value)
+                    // alert("Array after adding the cell value : " + unique_col_values_dict[col_index])
+
+                }
+
+
+            } else {
+                unique_col_values_dict[col_index] = new Array(cell_value)
+            }
         });
 
-        itemListElement.appendChild(listItem);
-    });
-}
 
-// Filtreleme işlemini gerçekleştir
-function filterList() {
-    const filteredItems = itemList.filter(item => {
-        const idFilter = idFilterInput.value.trim();
-        const dateFilter = dateFilterInput.value;
-
-        const idMatch = idFilter === '' || item.id.toString() === idFilter;
-        const dateMatch = dateFilter === '' || item.date === dateFilter;
-
-        return idMatch && dateMatch;
     });
 
-    itemListElement.innerHTML = '';
-
-    filteredItems.forEach(item => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `ID: ${item.id} - Tarih: ${item.date}`;
-        listItem.setAttribute('data-detail', item.detail);
-
-        listItem.addEventListener('click', () => {
-            showDetail(item.id);
-        });
-
-        itemListElement.appendChild(listItem);
-    });
-}
-
-// Detayları göster
-function showDetail(itemId) {
-    const selectedItem = itemList.find(item => item.id === itemId);
-
-    if (selectedItem) {
-        detailContainer.innerHTML = `<p>ID: ${selectedItem.id}</p><p>Tarih: ${selectedItem.date}</p><p>Detay: ${selectedItem.detail}</p>`;
-    } else {
-        detailContainer.innerHTML = '<p>Detay bulunamadı.</p>';
+    for (i in unique_col_values_dict) {
+        //alert("Column index : " + i + " has Unique values : \n" + unique_col_values_dict[i]);
     }
+
+    updateSelectOptions(unique_col_values_dict)
+
+};
+
+// Add <option> tags to the desired columns based on the unique values
+
+function updateSelectOptions(unique_col_values_dict) {
+    allFilters = document.querySelectorAll(".table-filter")
+
+    allFilters.forEach((filter_i) => {
+        col_index = filter_i.parentElement.getAttribute('col-index')
+
+        unique_col_values_dict[col_index].forEach((i) => {
+            filter_i.innerHTML = filter_i.innerHTML + `\n<option value="${i}">${i}</option>`
+        });
+
+    });
+};
+
+
+// Create filter_rows() function
+
+// filter_value_dict {2 : Value selected, 4:value, 5: value}
+
+function filter_rows() {
+    allFilters = document.querySelectorAll(".table-filter")
+    var filter_value_dict = {}
+
+    allFilters.forEach((filter_i) => {
+        col_index = filter_i.parentElement.getAttribute('col-index')
+
+        value = filter_i.value
+        if (value != "all") {
+            filter_value_dict[col_index] = value;
+        }
+    });
+
+    var col_cell_value_dict = {};
+
+    const rows = document.querySelectorAll("#emp-table tbody tr");
+    rows.forEach((row) => {
+        var display_row = true;
+
+        allFilters.forEach((filter_i) => {
+            col_index = filter_i.parentElement.getAttribute('col-index')
+            col_cell_value_dict[col_index] = row.querySelector("td:nth-child(" + col_index + ")").innerHTML
+        })
+
+        for (var col_i in filter_value_dict) {
+            filter_value = filter_value_dict[col_i]
+            row_cell_value = col_cell_value_dict[col_i]
+
+            if (row_cell_value.indexOf(filter_value) == -1 && filter_value != "all") {
+                display_row = false;
+                break;
+            }
+
+
+        }
+
+        if (display_row == true) {
+            row.style.display = "table-row"
+
+        } else {
+            row.style.display = "none"
+
+        }
+
+
+
+
+
+    })
+
 }
-
-// Sayfa yüklendiğinde veriyi al ve listeyi göster
-document.addEventListener('DOMContentLoaded', () => {
-    fetchData();
-});
-
-// Filtreleme butonuna tıklandığında listeyi filtrele
-filterButton.addEventListener('click', () => {
-    filterList();
-});

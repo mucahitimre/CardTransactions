@@ -1,11 +1,13 @@
 ﻿using CardTransactions.Api.Abstractions;
 using CardTransactions.Domain.Models;
-using CardTransactions.Web.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace CardTransactions.Web.Controllers
 {
+    /// <summary>
+    /// The home controller
+    /// </summary>
+    /// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
     public class HomeController : Controller
     {
         private readonly ISalesManager _salesManager;
@@ -24,29 +26,27 @@ namespace CardTransactions.Web.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        /// <summary>
+        /// Indexes this instance.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> Index()
         {
-            var list = _salesManager.GetListAsync(new SalesListFilter());
+            var list = await _salesManager.GetListAsync(new SalesListFilter());
 
             return View(list);
         }
 
-        public async Task<IActionResult> GetData()
+        /// <summary>
+        /// Details the specified identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        public async Task<IActionResult> Detail(string id)
         {
-            var list = await _salesManager.GetListAsync(new SalesListFilter());
+            var item = (await _salesManager.GetListAsync(new SalesListFilter() { Id = id })).FirstOrDefault();
 
-            return Json(list);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(item);
         }
     }
 }

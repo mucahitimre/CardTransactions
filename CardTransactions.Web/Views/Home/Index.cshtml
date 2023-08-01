@@ -1,23 +1,64 @@
-﻿<!DOCTYPE html>
+﻿@model IEnumerable<CardTransactions.Domain.Models.SalesDto>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listeleme Sayfası</title>
-    <link href="~/css/site.css" rel="stylesheet" />
+    <title>Cart Transactions</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Liste Sayfası</h1>
-    <div class="filter-container">
-        <label for="id-filter">ID Filtresi:</label>
-        <input type="number" id="id-filter">
-        <label for="date-filter">Tarih Filtresi:</label>
-        <input type="date" id="date-filter">
-        <button id="filter-button">Filtrele</button>
+
+    <div class="container">
+        <h2>Cart Transactions</h2>
+        <a href="/Home/Create" class="btn btn-info" role="button">Create</a>
+        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+        <br>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>CardNumber</th>
+                    <th>CardType</th>
+                    <th>Amount</th>
+                    <th>IsSuccess</th>
+                    <th>Timestamp</th>
+                    <th>ResponseCode</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.CardNumber</td>
+                        <td>@item.CardType</td>
+                        <td>@item.Amount</td>
+                        <td>@item.IsSuccess</td>
+                        <td>@item.Timestamp</td>
+                        <td>@item.ResponseCode</td>
+                        <td><a href="/Home/Detail?id=@item.Id"> Detail </a></td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
     </div>
-    <ul id="item-list">
-        <!-- Liste öğeleri dinamik olarak buraya eklenecek -->
-    </ul>
-    <script src="~/js/site.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+
 </body>
 </html>

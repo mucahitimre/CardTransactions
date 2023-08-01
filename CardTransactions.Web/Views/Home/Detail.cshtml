@@ -1,16 +1,59 @@
-﻿<!DOCTYPE html>
+﻿@model CardTransactions.Domain.Models.SalesDto
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detay Görüntüleme Sayfası</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>
+        <p>The form below contains two input elements; one of type text and one of type password:</p>
+    </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Detay Görüntüleme Sayfası</h1>
-    <div id="detail-container">
-        <!-- Detaylar dinamik olarak buraya eklenecek -->
+
+    <div class="container">
+        <h2>Transaction Detail</h2>
+        <form>
+
+            <div class="form-group">
+                <label for="usr">Id:</label>
+                <input type="text" class="form-control" value="@Model.Id" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="usr">CardNumber:</label>
+                <input type="text" class="form-control" value="@Model.CardNumber" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="usr">CardType:</label>
+                <input type="text" class="form-control" value="@Model.CardType" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="usr">Amount:</label>
+                <input type="text" class="form-control" value="@Model.Amount" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="usr">IsSuccess:</label>
+                <input type="text" class="form-control" value="@Model.IsSuccess.ToString()" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="usr">Timestamp:</label>
+                <input type="text" class="form-control" value="@Model.Timestamp" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="usr">ResponseCode:</label>
+                <input type="text" class="form-control" value="@Model.ResponseCode" disabled>
+            </div>
+
+        </form>
     </div>
-    <script src="scripts.js"></script>
+
 </body>
 </html>
