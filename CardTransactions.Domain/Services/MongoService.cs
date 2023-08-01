@@ -13,6 +13,8 @@ namespace CardTransactions.Domain.Services
     /// <seealso cref="CardTransactions.Domain.Abstractions.IMongoService" />
     public class MongoService : IMongoService
     {
+        private static readonly object Lock = new object();
+
         private readonly IConfiguration _configuration;
 
         /// <summary>
@@ -51,14 +53,19 @@ namespace CardTransactions.Domain.Services
         /// </summary>
         public async Task CreateDumyDateAsync()
         {
-            var collection = GetCollection<SalesDocument>();
-            var isHaveData = await collection.Find(w => true).AnyAsync();
-            if (!isHaveData)
+            lock (Lock)
             {
-                var file = File.ReadAllText("DumyData.json");
-                var documents = JsonConvert.DeserializeObject<List<SalesDocument>>(file);
-                await collection.InsertManyAsync(documents);
+                var collection = GetCollection<SalesDocument>();
+                var isHaveData = collection.Find(w => true).Any();
+                if (!isHaveData)
+                {
+                    var file = File.ReadAllText("DumyData.json");
+                    var documents = JsonConvert.DeserializeObject<List<SalesDocument>>(file);
+                    collection.InsertManyAsync(documents);
+                }
             }
+
+            await Task.CompletedTask;
         }
 
         /// <summary>

@@ -99,8 +99,9 @@ namespace CardTransactions.Domain.Services
                 CardSecurityNumber = request.CardSecurityNumber,
                 Timestamp = DateTime.UtcNow,
                 ResponseCode = responseCode,
+                Amount = request.Amount,
                 IsSuccess = isValidCard,
-                CardType = cardType
+                CardType = cardType,
             };
 
             await _mongoService.Add(doc);
