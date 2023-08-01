@@ -13,8 +13,13 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IMongoService, MongoService>();
 builder.Services.AddTransient<ISalesManager, SalesManager>();
+builder.Services.AddTransient<IBankService, BankService>();
 
 var app = builder.Build();
+
+// Create indexes
+app.Services.GetService<IMongoService>().CreateIndexAsync();
+await app.Services.GetService<IMongoService>().CreateDumyDateAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

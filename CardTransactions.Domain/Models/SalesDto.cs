@@ -1,14 +1,16 @@
-﻿namespace CardTransactions.Domain.Documents
+﻿// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+namespace CardTransactions.Domain.Models
 {
     /// <summary>
-    /// The sales document
+    /// The sales dto
     /// </summary>
-    public class SalesDocument
+    public class SalesDto
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SalesDocument"/> class.
         /// </summary>
-        public SalesDocument()
+        public SalesDto()
         {
         }
 
@@ -27,30 +29,6 @@
         /// The card number.
         /// </value>
         public string CardNumber { get; set; }
-
-        /// <summary>
-        /// Gets or sets the full name of the card.
-        /// </summary>
-        /// <value>
-        /// The full name of the card.
-        /// </value>
-        public string CardFullName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the expiry date.
-        /// </summary>
-        /// <value>
-        /// The expiry date.
-        /// </value>
-        public string ExpiryDate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the card security number.
-        /// </summary>
-        /// <value>
-        /// The card security number.
-        /// </value>
-        public int CardSecurityNumber { get; set; }
 
         /// <summary>
         /// Gets or sets the amount.

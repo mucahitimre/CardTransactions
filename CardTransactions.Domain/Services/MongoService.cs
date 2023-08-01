@@ -1,57 +1,91 @@
 ﻿using CardTransactions.Domain.Abstractions;
-using MongoDB.Driver;
 using CardTransactions.Domain.Documents;
-using Microsoft.Extensions.Configuration;
 using CardTransactions.Domain.Models;
+using Microsoft.Extensions.Configuration;
+using MongoDB.Driver;
+using Newtonsoft.Json;
 
 namespace CardTransactions.Domain.Services
 {
+    /// <summary>
+    /// The mongo service
+    /// </summary>
+    /// <seealso cref="CardTransactions.Domain.Abstractions.IMongoService" />
     public class MongoService : IMongoService
     {
         private readonly IConfiguration _configuration;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoService"/> class.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
         public MongoService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public void CreateIndex()
+        /// <summary>
+        /// Creates the index.
+        /// </summary>
+        public async void CreateIndexAsync()
         {
             var collection = GetCollection<SalesDocument>();
 
-            var createdDateIndex = Builders<SalesDocument>.IndexKeys.Ascending(w => w.CreatedUtc);
+            var createdDateIndex = Builders<SalesDocument>.IndexKeys.Ascending(w => w.Timestamp);
             var createdIndexModel = new CreateIndexModel<SalesDocument>(createdDateIndex);
-            collection.Indexes.CreateOne(createdIndexModel);
+            await collection.Indexes.CreateOneAsync(createdIndexModel);
         }
 
+        /// <summary>
+        /// Adds the specified document.
+        /// </summary>
+        /// <param name="document">The document.</param>
         public async Task Add(SalesDocument document)
         {
             var collection = GetCollection<SalesDocument>();
-            collection.InsertOne(document);
-
-            await Task.CompletedTask;
+            await collection.InsertOneAsync(document);
         }
 
-        public async Task<IEnumerable<SalesDocument>> ListAsync(SalesListModel request)
+        /// <summary>
+        /// Bulks the specified document.
+        /// </summary>
+        public async Task CreateDumyDateAsync()
+        {
+            var collection = GetCollection<SalesDocument>();
+            var isHaveData = await collection.Find(w => true).AnyAsync();
+            if (!isHaveData)
+            {
+                var file = File.ReadAllText("DumyData.json");
+                var documents = JsonConvert.DeserializeObject<List<SalesDocument>>(file);
+                await collection.InsertManyAsync(documents);
+            }
+        }
+
+        /// <summary>
+        /// Lists the asynchronous.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<SalesDocument>> ListAsync(SalesListFilter request)
         {
             var collection = GetCollection<SalesDocument>();
             var filter = BuildFiltersWithRequest(request);
-            var docs = await collection.Find(filter).ToListAsync();
+            var docs = await collection.Find(filter).Sort(Builders<SalesDocument>.Sort.Descending(w => w.Timestamp)).ToListAsync();
 
             return docs;
         }
 
-        private static FilterDefinition<SalesDocument> BuildFiltersWithRequest(SalesListModel request)
+        private static FilterDefinition<SalesDocument> BuildFiltersWithRequest(SalesListFilter request)
         {
             var filters = new List<FilterDefinition<SalesDocument>>() { Builders<SalesDocument>.Filter.Empty };
             if (request.StartDate.HasValue)
             {
-                filters.Add(Builders<SalesDocument>.Filter.Gte(w => w.CreatedUtc, request.StartDate.Value));
+                filters.Add(Builders<SalesDocument>.Filter.Gte(w => w.Timestamp, request.StartDate.Value));
             }
 
             if (request.EndDate.HasValue)
             {
-                filters.Add(Builders<SalesDocument>.Filter.Lte(w => w.CreatedUtc, request.EndDate.Value));
+                filters.Add(Builders<SalesDocument>.Filter.Lte(w => w.Timestamp, request.EndDate.Value));
             }
 
             if (request.AmountStart.HasValue)
@@ -70,6 +104,7 @@ namespace CardTransactions.Domain.Services
             }
 
             var filter = Builders<SalesDocument>.Filter.And(filters);
+
             return filter;
         }
 
@@ -86,8 +121,7 @@ namespace CardTransactions.Domain.Services
             var connectionString = _configuration.GetSection("MongoOptions").Get<MongoOptions>();
             if (connectionString == null)
             {
-                throw new Exception(
-                    "You must set your 'MONGODB_URI' environmental variable. See\n\t https://www.mongodb.com/docs/drivers/csharp/current/quick-start/#set-your-connection-string");
+                throw new Exception("MongoOptions is null, please check app settings.");
             }
 
             var settings = MongoClientSettings.FromUrl(new MongoUrl(connectionString.ConnectionString));

@@ -1,9 +1,9 @@
 ﻿namespace CardTransactions.Domain.Models
 {
     /// <summary>
-    /// The sales insert model
+    /// The bank pay model
     /// </summary>
-    public class SalesInsertModel
+    public class BankPayModel
     {
         /// <summary>
         /// Gets or sets the card number.
