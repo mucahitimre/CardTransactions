@@ -17,3 +17,8 @@ docker pull mongo:latest
 ```bash
 docker run -d -p 27017:27017 --name my-mongodb mongo
 ```
+
+3. If there is mongo with the same name::
+```bash
+docker start my-mongodb
+```
